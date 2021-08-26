@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/books', function (Request $request) {
+    return response()->json([
+        'name' => '1984',
+        'year' => '1948',
+    ]);
 });

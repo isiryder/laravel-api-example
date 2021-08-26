@@ -7,15 +7,22 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function test_example()
+
+    public function testGetRoot()
     {
         $response = $this->get('/');
 
         $response->assertStatus(200);
+    }
+
+    public function testGetBooks()
+   {
+       $response = $this->get('/api/books');
+
+       $response->assertStatus(200);
+       $response->assertJson([
+            'name' => '1984',
+            'year' => '1948',
+    ]);
     }
 }
