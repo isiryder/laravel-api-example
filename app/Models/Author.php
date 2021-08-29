@@ -17,4 +17,9 @@ class Author extends Model
         'birth_date',
         'genre'
     ];
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
 }

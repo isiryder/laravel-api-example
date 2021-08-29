@@ -15,7 +15,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Book::all();
+        return Book::with('author')->get();
     }
 
     /**
@@ -48,7 +48,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        return Book::findOrFail($id);
+        return Book::with('author')->findOrFail($id);
     }
 
     /**
