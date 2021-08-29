@@ -94,7 +94,7 @@ class LibrariesTest extends TestCase
           $this->assertDatabaseMissing('libraries', $payload);
       }
  
-     public function testListLibrarysSuccesfully()
+     public function testListLibrariesSuccesfully()
      {
          $response = $this->json('GET', 'api/libraries')
              ->assertStatus(Response::HTTP_OK)

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use App\Models\Author;
 use App\Models\Book;
 use Tests\TestCase;
 
@@ -57,14 +58,14 @@ class BookTest extends TestCase
         ->assertStatus(Response::HTTP_OK);
     }
 
-   public function testFindNonExistingBook()
-   {
-        $this->json('GET', 'api/books/0')
-        ->assertStatus(Response::HTTP_NOT_FOUND);
-   }
+    public function testFindNonExistingBook()
+    {
+            $this->json('GET', 'api/books/0')
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
 
-   public function testUpdateOneBookSuccesfully()
-   {
+    public function testUpdateOneBookSuccesfully()
+    {
         $book = Book::create([
             'name' => $this->faker->name,
             'year' => $this->faker->year
@@ -102,8 +103,43 @@ class BookTest extends TestCase
                 [
                     "id",
                     "name",
-                    "year",
+                    "year"
                 ]
             ]);
     }
+
+    public function testFindOneBookWithAuthorSuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        $author = Author::create([
+            'name' => $this->faker->name,
+            'birth_date' => $this->faker->date,
+            'genre' => $this->faker->word
+        ]);
+
+        $book->author_id = $author->id;
+
+        $book->save();
+
+        $this->assertDatabaseHas('books', $book->toArray());
+
+        $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "author_id",
+            "author" => [
+                "name",
+                "birth_date",
+                "genre"
+            ]
+        ]);
+    }
+
 }
