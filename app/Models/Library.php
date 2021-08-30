@@ -16,4 +16,9 @@ class Library extends Model
         'name',
         'address'
     ];
+
+    public function library()
+    {
+        return $this->belongsTo(Book::class);
+    }
 }

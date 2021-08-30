@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\Library;
 use Tests\TestCase;
 
 class BookTest extends TestCase
@@ -142,4 +143,83 @@ class BookTest extends TestCase
         ]);
     }
 
+    public function testFindOneBookWithLibrarySuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        $library = Library::create([
+            'name' => $this->faker->name,
+            'address' => $this->faker->address
+        ]);
+
+        $book->libraries()->save($library);
+
+        $book->save();
+
+        $this->assertDatabaseHas('books', $book->toArray());
+
+        $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "libraries" => [
+                0 => [
+                    "name",
+                    "address",
+                ]
+            ]
+        ]);
+    }
+ 
+    public function testFindOneBookWithAuthorAndLibrarySuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        $author = Author::create([
+            'name' => $this->faker->name,
+            'birth_date' => $this->faker->date,
+            'genre' => $this->faker->word
+        ]);
+
+        $book->author_id = $author->id;
+
+        $library = Library::create([
+            'name' => $this->faker->name,
+            'address' => $this->faker->address
+        ]);
+
+        $book->libraries()->save($library);
+
+        $book->save();
+
+        $this->assertDatabaseHas('books', $book->toArray());
+
+        $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "author_id",
+            "author" => [
+                "name",
+                "birth_date",
+                "genre"
+            ],
+            "libraries" => [
+                0 => [
+                    "name",
+                    "address",
+                ]
+            ]
+        ]);
+    }
 }
