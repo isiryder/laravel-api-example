@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Book;
+use App\Models\Author;
+use App\Models\Library;
 
 class BookController extends Controller
 {
@@ -25,7 +27,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        echo Form::open(array('url' => 'foo/bar', 'method' => 'put'));
     }
 
     /**
@@ -36,7 +38,21 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = Book::create($request->all());
+        $bookInput = $request->only((new Book)->getFillable());
+        $book = Book::create($bookInput);
+
+        if ($request->has('author')) {
+            $author = Author::create($request->author);
+            $book->author_id = $author->id;
+            $book->save();
+        }
+
+        if ($request->has('library')) {
+            $library = Library::create($request->library);
+            $book->libraries()->save($library);
+            $book->save();
+        }
+
         return response(['book' => $book, 'message' => 'Created Successfully'], Response::HTTP_CREATED);
     }
 
@@ -73,7 +89,21 @@ class BookController extends Controller
     {
         $book = Book::find($id);
 
-        $book?->update($request->all());
+        $bookInput = $request->only((new Book)->getFillable());
+
+        $book?->update($bookInput);
+
+        if ($request->has('author')) {
+            $author = Author::find($request->author['id']);
+            $author?->update($request->author);
+            $author?->save();
+        }
+
+        if ($request->has('libraries')) {
+            $library = Library::find($request->libraries[0]['id']);
+            $library?->update($request->libraries[0]);
+            $library?->save();
+        }
 
         return response([], Response::HTTP_NO_CONTENT);
     }
