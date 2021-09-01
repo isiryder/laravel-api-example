@@ -1,6 +1,6 @@
 # Example Laravel API
 
-Example API written in Laravel with books, authors and libraries. Frontend generated with Laravel Blade templates and uses Jquery and Bootstrap.
+Example API written in Laravel with books, authors and libraries. Frontend generated with Laravel Blade templates and using Jquery and Bootstrap.
 
 ## Prerrequisites
 
