@@ -26,7 +26,7 @@ class BooksTableSeeder extends Seeder
             'address' => $faker->address
         ]);
 
-        for ($i=0; $i < 50; $i++){
+        for ($i=0; $i < 5; $i++){
             $book = Book::create([
                 'name' => $faker->name,
                 'year' => $faker->year,
