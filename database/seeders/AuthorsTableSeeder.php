@@ -18,7 +18,7 @@ class AuthorsTableSeeder extends Seeder
 
         $faker = \Faker\Factory::create();
 
-        for ($i=0; $i < 50; $i++){
+        for ($i=0; $i < 10; $i++){
             Author::create([
                 'name' => $faker->name,
                 'birth_date' => $faker->date,
