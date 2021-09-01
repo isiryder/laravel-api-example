@@ -106,6 +106,8 @@
                 } else {
                     $('#formSubmit').html('Save');
                     $('#book_id').parent().hide()
+                    $('#author_id').parent().hide()
+                    $('#library_id').parent().hide()
                 }
                 
                 $('#book_id').val(book_id);
@@ -177,7 +179,7 @@
             });
         });
     </script>
-@if (count($books) > 0)
+
 <div class="container mt-100">
     <div class="row">
         <div class="col-md-12">
@@ -202,7 +204,7 @@
                             </div>Actions
                         </th>
                     </thead>
-
+                    @if (count($books) > 0)
                     <!-- Table Body -->
                     <tbody>
                         @foreach ($books as $book)
@@ -247,7 +249,7 @@
                                 </td>
                                 <td>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id }}" data-library-id="{{ $libraryId }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
+                                    <button type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id ?? '' }}" data-library-id="{{ $libraryId ?? '' }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
@@ -306,11 +308,14 @@
                             </tr>
                         @endforeach
                     </tbody>
+                    @else
+                    <tr><td colspan="10">No books yet, add a new one!</tr></td>
+                    @endif
                 </table>
             </div>
         </div>
     </div>
 </div>
-    @endif
+
 </body>
 </html>
