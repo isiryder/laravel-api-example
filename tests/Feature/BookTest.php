@@ -62,9 +62,11 @@ class BookTest extends TestCase
          $payload = [
              'name' => $this->faker->name,
              'year' => $this->faker->year,
-             "library" => [
-                 "name" => $this->faker->name,
-                 "address" => $this->faker->date,
+             "libraries" => [
+                 0 => [
+                    "name" => $this->faker->name,
+                    "address" => $this->faker->date,
+                 ]
              ],
          ];
  
@@ -192,16 +194,16 @@ class BookTest extends TestCase
             'year' => $this->faker->year
         ]);
 
-        $library = Library::create([
+        $libraries = Library::create([
             'name' => $this->faker->name,
             'address' => $this->faker->address
         ]);
 
-        $book->libraries()->save($library);
+        $book->libraries()->save($libraries);
 
         $payload = $book->toArray();
         $payload['libraries'] = [
-            0 => $library->toArray()
+            0 => $libraries->toArray()
         ];
 
         $payload['name'] .= ' modified!';
@@ -295,12 +297,12 @@ class BookTest extends TestCase
             'year' => $this->faker->year
         ]);
 
-        $library = Library::create([
+        $libraries = Library::create([
             'name' => $this->faker->name,
             'address' => $this->faker->address
         ]);
 
-        $book->libraries()->save($library);
+        $book->libraries()->save($libraries);
 
         $book->save();
 
@@ -336,12 +338,12 @@ class BookTest extends TestCase
 
         $book->author_id = $author->id;
 
-        $library = Library::create([
+        $libraries = Library::create([
             'name' => $this->faker->name,
             'address' => $this->faker->address
         ]);
 
-        $book->libraries()->save($library);
+        $book->libraries()->save($libraries);
 
         $book->save();
 

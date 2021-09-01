@@ -47,8 +47,8 @@ class BookController extends Controller
             $book->save();
         }
 
-        if ($request->has('library')) {
-            $library = Library::create($request->library);
+        if ($request->has('libraries')) {
+            $library = Library::create($request->libraries[0]);
             $book->libraries()->save($library);
             $book->save();
         }
