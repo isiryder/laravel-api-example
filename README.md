@@ -34,7 +34,8 @@ sail artisan migrate
 sail artisan db:seed 
 ```
 
-Content of .env:
+
+Content of .env (default values from Laravel Sail):
 ```bash
 APP_NAME=Laravel
 APP_ENV=local
@@ -97,3 +98,6 @@ MEILISEARCH_HOST=http://meilisearch:7700
 
 Just navigate to http://localhost/ on a browser and you should see the list of books (or an empty table if seeding was omitted)
 
+![empty list](https://user-images.githubusercontent.com/389952/131696960-177b9f28-704a-463a-88ad-1627099baaae.png)
+
+![books list with items](https://user-images.githubusercontent.com/389952/131696951-ef3c7a43-3232-44f1-b988-3ce2c4ac63cf.png)
