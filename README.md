@@ -19,7 +19,7 @@ https://www.docker.com/products/docker-desktop
 
 ## Installation
 
-Using sail (PHP version 7.4+ required in local machine)
+Using sail (Make sure you have PHP version 7.4+ in local machine, then install composer and have docker running too):
 
 ```bash
 composer require laravel/sail
@@ -31,6 +31,7 @@ php artisan sail:publish
 sail up
 sail composer install
 sail artisan migrate
+sail artisan db:seed 
 ```
 
 Content of .env:
@@ -91,25 +92,8 @@ SCOUT_DRIVER=meilisearch
 MEILISEARCH_HOST=http://meilisearch:7700
 ```
 
+
 ## Usage
 
-```python
-import foobar
+Just navigate to http://localhost/ on a browser and you should see the list of books (or an empty table if seeding was omitted)
 
-# returns 'words'
-foobar.pluralize('word')
-
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
-```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
