@@ -101,3 +101,13 @@ Just navigate to http://localhost/ on a browser and you should see the list of b
 ![empty list](https://user-images.githubusercontent.com/389952/131696960-177b9f28-704a-463a-88ad-1627099baaae.png)
 
 ![books list with items](https://user-images.githubusercontent.com/389952/131696951-ef3c7a43-3232-44f1-b988-3ce2c4ac63cf.png)
+
+
+## Testing
+
+```bash
+sail test 
+```
+
+![test results](https://user-images.githubusercontent.com/389952/131701639-9fd4a539-2cf8-4589-973e-bbd68551de41.png)
+
