@@ -97,6 +97,11 @@ class BookController extends Controller
             $author = Author::find($request->author['id']);
             $author?->update($request->author);
             $author?->save();
+
+            if ($book->author_id != $author->id) {
+                $book->author_id = $author->id;
+                $book->save();
+            }
         }
 
         if ($request->has('libraries')) {
