@@ -22,7 +22,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger" style="display:none"></div>
+                    <div class="alert alert-danger">
+                        <div class="alert-danger-box-text"></div>
+                    </div>
                     <form class="image-upload" method="post" action="{{ route('books.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
@@ -124,6 +126,8 @@
         })
 
         $(document).ready(function(){
+            $(".alert-danger").hide();
+            $(".alert-success").hide();
             $('#formSubmit').click(function(e){
                 e.preventDefault();
                 $.ajaxSetup({
@@ -159,21 +163,32 @@
                             address: $('#library_address').val()
                         }]
                     },
-                    success: function(result){
-                        if(result && result.errors)
+                    success: function(response){
+                        if(response && response.errors)
                         {
                             $('.alert-danger').html('');
 
-                            $.each(result.errors, function(key, value){
+                            $.each(response.errors, function(key, value){
                                 $('.alert-danger').show();
                                 $('.alert-danger').append('<li>'+value+'</li>');
                             });
                         }
                         else
                         {
-                            $('.alert-danger').hide();
+                            var responseMessage = (response === undefined) ? "Book saved" : response.message;
+                            message = "<strong>Success!</strong> " + responseMessage;
+                            $('.alert-box-text').html(message);
+                            $('.alert-success').show();
+                            setInterval('$(".alert-success").hide()', 3000);
                             $('#exampleModal').modal('hide');
                         }
+                    },
+                    error: function(response){
+                        console.log(response);
+                        message = "<strong>Error!</strong> " + response.statusText + ": " + response.responseJSON.message;
+                            $('.alert-danger-box-text').html(message);
+                            $('.alert-danger').show();
+                            setInterval('$(".alert-danger").hide()', 5000);
                     }
                 });
             });
@@ -184,9 +199,11 @@
     <div class="row">
         <div class="col-md-12">
             <div>
-                <span class="success" style="color:green; margin-top:10px; margin-bottom: 10px;"></span>
                 <div>
                     <div>
+                        <div class="alert alert-success">
+                            <div class="alert-box-text"></div>
+                        </div>
                         <table class="table table-striped table-bordered" id="example-app">
 
                     <!-- Table Headings -->
@@ -256,30 +273,6 @@
                                     <button class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
                                 </div>
                                 <script>
-                                    $(".save-data-{{$loop->iteration}}").click(function(event){
-                                        event.preventDefault();
-
-                                        let name = $("input[name=name]").val();
-                                        let year = $("input[name=year]").val();
-                                        let _token   = $('meta[name="csrf-token"]').attr('content');
-                                        
-                                        $.ajax({
-                                            url: "{{ route('books.update', $book->id) }}",
-                                            type:"PUT",
-                                            data:{
-                                                name:name,
-                                                year:year,
-                                                _token: _token
-                                            },
-                                            success:function(response){
-                                                console.log(response);
-                                                if(response) {
-                                                    $('.success').text(response.message);
-                                                    $('#row-{{$loop->iteration}}').hide();
-                                                }
-                                            },
-                                        });
-                                    });
                                     $(".delete-data-{{$loop->iteration}}").click(function(event){
                                         event.preventDefault();
 
@@ -298,8 +291,11 @@
                                             success:function(response){
                                                 console.log(response);
                                                 if(response) {
-                                                    $('.success').text(response.message);
+                                                    message = "<strong>Success!</strong> " + response.message;
+                                                    $('.alert-box-text').html(message);
+                                                    $('.alert-success').show();
                                                     $('#row-{{$loop->iteration}}').hide();
+                                                    setInterval('$(".alert-success").hide()', 3000);
                                                 }
                                             },
                                         });
