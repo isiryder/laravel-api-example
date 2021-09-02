@@ -209,10 +209,11 @@
                     <tbody>
                         @foreach ($books as $book)
                             @if (isset($book->libraries))
-                            @php 
-                                $libraryName = '';
-                                $libraryAddress = '';
-                            @endphp
+                                @php
+                                    $libraryId = '';
+                                    $libraryName = '';
+                                    $libraryAddress = '';
+                                @endphp
                                 @foreach ($book->libraries as $library)
                                 @if ($loop->first)
                                     @php 
