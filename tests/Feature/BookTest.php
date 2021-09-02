@@ -144,7 +144,7 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', $payload);
     }
 
-    public function testUpdateOneBookWithAuthorSuccesfully()
+    public function testUpdateOneBookWithAlreadyAssociatedAuthorSuccesfully()
     {
         $book = Book::create([
             'name' => $this->faker->name,
@@ -166,6 +166,45 @@ class BookTest extends TestCase
 
         $payload['name'] .= ' modified!';
         $payload['author']['name'] .= ' modified!';
+
+        $this->json('PUT', 'api/books/' . $book->id, $payload)
+            ->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $response = $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "author_id",
+            "author" => [
+                "name",
+                "birth_date",
+                "genre"
+            ]
+        ]);
+        $this->assertEquals($response->json()['author']['id'], $payload['author']['id']);
+        $this->assertEquals($response->json()['author']['name'], $payload['author']['name']);
+    }
+
+    public function testUpdateOneBookWithExistingNonAssociatedAuthorSuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        $book->save();
+
+        $author = Author::create([
+            'name' => $this->faker->name,
+            'birth_date' => $this->faker->date,
+            'genre' => $this->faker->word
+        ]);
+
+        $payload = $book->toArray();
+        $payload['author'] = $author->toArray();
+        $payload['author_id'] = $author->id;
 
         $this->json('PUT', 'api/books/' . $book->id, $payload)
             ->assertStatus(Response::HTTP_NO_CONTENT);
@@ -225,7 +264,7 @@ class BookTest extends TestCase
                     "address",
                 ]
             ]
-        ]);    
+        ]);
         $this->assertEquals($response->json()['libraries'][0]['id'], $payload['libraries'][0]['id']);
         $this->assertEquals($response->json()['libraries'][0]['name'], $payload['libraries'][0]['name']);
     }
