@@ -94,12 +94,17 @@ class BookController extends Controller
         $book?->update($bookInput);
 
         if ($request->has('author')) {
-            $author = Author::find($request->author['id']);
-            $author?->update($request->author);
-            $author?->save();
+            $author = null;
+            if (isset($request->author['id'])) {
+                $author = Author::find($request->author['id']);
+                $author?->update($request->author);
+                $author?->save();
+            } else {
+                $author = Author::create($request->author);
+            }
 
-            if ($book->author_id != $author->id) {
-                $book->author_id = $author->id;
+            if ($book->author_id != $author?->id) {
+                $book->author_id = $author?->id;
                 $book->save();
             }
         }
