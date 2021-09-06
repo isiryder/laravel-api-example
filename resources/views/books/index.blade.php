@@ -33,11 +33,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Book Name</label>
-                                <input type="text" name="book_name" id="book_name" class="form-control">
+                                <input required type="text" name="book_name" id="book_name" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label>Book Year</label>
-                                <input type="number" name="book_year" id="book_year" class="form-control">
+                                <input required type="number" name="book_year" id="book_year" class="form-control">
                             </div>
                         </div>
                         <div class="border p-3 m-2">
@@ -47,7 +47,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Author Name</label>
-                                <input type="text" name="author_name" id="author_name" class="form-control" pattern="^[a-zA-Z ]+$">
+                                <input required type="text" name="author_name" id="author_name" class="form-control" pattern="^[a-zA-Z ]+$">
                             </div>
                             <div class="form-group">
                                 <label>Author Genre</label>
@@ -55,7 +55,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Author Birth Date</label>
-                                <input type="text" name="author_birth_date" id="author_birth_date" class="form-control">
+                                <input required type="text" name="author_birth_date" id="author_birth_date" class="form-control">
                             </div>
                         </div>
                         <div class="border p-3 m-2">
@@ -153,14 +153,28 @@
                 e.preventDefault();
                 errors = false;
                 message = '';
+                if (!$('#book_name')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Book name is required.</li>';
+
+                }
+                if (!$('#book_year')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Book year is required.</li>';
+
+                }
                 if (!$('#author_name')[0].checkValidity()) {
                     errors = true;
-                    message += '<li>Author name should only contain alphabetic characters.</li>';
+                    message += '<li>Author name is required and should only contain alphabetic characters.</li>';
 
                 }
                 if (!$('#author_genre')[0].checkValidity()) {
                     errors = true;
                     message += '<li>Author genre should only contain alphabetic characters.</li>';
+                }
+                if (!$('#author_birth_date')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Author birth date is required.</li>';
                 }
                 if (errors) {
                     $('.alert-danger-box-text').html(message);
