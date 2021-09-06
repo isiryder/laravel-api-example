@@ -136,6 +136,7 @@
             })
         })
         $(document).ready(function(){
+            $( "#author_birth_date" ).datepicker({dateFormat: 'yy-mm-dd', maxDate: '0'});
             $(".alert-danger").hide();
             $(".alert-success").hide();
             $('#formSubmit').click(function(e){
