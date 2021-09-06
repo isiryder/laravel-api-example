@@ -47,11 +47,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Author Name</label>
-                                <input type="text" name="author_name" id="author_name" class="form-control">
+                                <input type="text" name="author_name" id="author_name" class="form-control" pattern="^[a-zA-Z ]+$">
                             </div>
                             <div class="form-group">
                                 <label>Author Genre</label>
-                                <input type="text" name="author_genre" id="author_genre" class="form-control" pattern="^[a-zA-Z]+$">
+                                <input type="text" name="author_genre" id="author_genre" class="form-control" pattern="^[a-zA-Z ]+$">
                             </div>
                             <div class="form-group">
                                 <label>Author Birth Date</label>
@@ -140,13 +140,11 @@
             })
         })
         $(document).ready(function(){
-            $('#author_genre').on('input', () => {
-                $('#author_genre')[0].setCustomValidity('');
-                $('#author_genre')[0].checkValidity();
-                console.log($('#author_genre')[0].checkValidity());
+            $('#author_name').on('input', () => {
+                $('#author_name')[0].checkValidity();
             });
-            $('#author_genre').on('invalid', () => {
-                $('#author_genre')[0].setCustomValidity('Please, use only alphabetic characters.');
+            $('#author_genre').on('input', () => {
+                $('#author_genre')[0].checkValidity();
             });
             $( "#author_birth_date" ).datepicker({dateFormat: 'yy-mm-dd', maxDate: '0'});
             $(".alert-danger").hide();
@@ -154,13 +152,21 @@
             $('#formSubmit').click(function(e){
                 e.preventDefault();
                 errors = false;
+                message = '';
+                if (!$('#author_name')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Author name should only contain alphabetic characters.</li>';
+
+                }
                 if (!$('#author_genre')[0].checkValidity()) {
                     errors = true;
-                    message = 'Author genre should only contain alphabetic characters.';
-                    $('.alert-danger-box-text').html('<li>'+message+'</li>');
-                    $('.alert-danger').show();
+                    message += '<li>Author genre should only contain alphabetic characters.</li>';
                 }
-                if (errors) return;
+                if (errors) {
+                    $('.alert-danger-box-text').html(message);
+                    $('.alert-danger').show();
+                    return;
+                }
                 $('.alert-danger-box-text').html('');
                 $(".alert-danger").hide();
                 $.ajaxSetup({
