@@ -101,6 +101,7 @@
                 let library_name = ''
                 let library_address = ''
 
+                $(".alert-danger").hide();
                 if (btn[0].id == "edit_book") {
                     $('#formSubmit').html('Update');
                     $('#book_id').parent().show()
@@ -121,7 +122,7 @@
                     $('#author_id').parent().hide()
                     $('#library_id').parent().hide()
                 }
-                
+
                 $('#book_id').val(book_id);
                 $('#book_name').val(book_name);
                 $('#book_year').val(book_year);
@@ -134,12 +135,12 @@
                 $('#library_address').val(library_address);
             })
         })
-
         $(document).ready(function(){
             $(".alert-danger").hide();
             $(".alert-success").hide();
             $('#formSubmit').click(function(e){
                 e.preventDefault();
+                $(".alert-danger").hide();
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
