@@ -76,3 +76,7 @@ th {
     padding: 10px 19px;
     cursor: pointer
 }
+
+.ui-datepicker-calendar {
+    display: none;
+ }
