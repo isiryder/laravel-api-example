@@ -48,9 +48,11 @@ class BookController extends Controller
         }
 
         if ($request->has('libraries')) {
-            $library = Library::create($request->libraries[0]);
-            $book->libraries()->save($library);
-            $book->save();
+            foreach ($request->libraries as $libraryData) {
+                $library = Library::create($libraryData);
+                $book->libraries()->save($library);
+                $book->save();
+            }
         }
 
         return response(['book' => $book, 'message' => 'Created Successfully'], Response::HTTP_CREATED);
