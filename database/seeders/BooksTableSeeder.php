@@ -21,11 +21,6 @@ class BooksTableSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $faker = \Faker\Factory::create();
 
-        $library = Library::create([
-            'name' => $faker->name,
-            'address' => $faker->address
-        ]);
-
         for ($i=0; $i < 5; $i++){
             $book = Book::create([
                 'name' => $faker->name,
@@ -33,7 +28,14 @@ class BooksTableSeeder extends Seeder
                 'author_id' => 1,
             ]);
 
-            $book->libraries()->save($library);
+            for($j=0;$j<2;$j++){
+                $library = Library::create([
+                    'name' => $faker->name,
+                    'address' => $faker->address
+                ]);
+
+                $book->libraries()->save($library);
+            }
 
             $book->save();
         }
