@@ -203,6 +203,7 @@
                     }
                 });
             });
+            $('button:disabled').removeAttr('disabled');
         });
     </script>
 
@@ -278,10 +279,10 @@
                                 </td>
                                 <td>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id ?? '' }}" data-library-id="{{ $libraryId ?? '' }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
+                                    <button disabled type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id ?? '' }}" data-library-id="{{ $libraryId ?? '' }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
+                                    <button disabled class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
                                 </div>
                                 <script>
                                     $(".delete-data-{{$loop->iteration}}").click(function(event){
