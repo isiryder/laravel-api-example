@@ -228,12 +228,7 @@
                         }
                         else
                         {
-                            var responseMessage = (response === undefined) ? "Book saved" : response.message;
-                            message = "<strong>Success!</strong> " + responseMessage;
-                            $('.alert-box-text').html(message);
-                            $('.alert-success').show();
-                            setInterval('$(".alert-success").hide()', 3000);
-                            $('#exampleModal').modal('hide');
+                            location.reload();
                         }
                     },
                     error: function(response){
