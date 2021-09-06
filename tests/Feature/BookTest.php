@@ -69,6 +69,45 @@ class BookTest extends TestCase
                  ]
              ],
          ];
+
+         $response = $this->json('POST', 'api/books', $payload)
+             ->assertStatus(Response::HTTP_CREATED);
+
+         $this->json('GET', 'api/books/' . $response->json()['book']['id'])
+         ->assertStatus(Response::HTTP_OK)
+         ->assertJsonStructure([
+             "id",
+             "name",
+             "year",
+             "libraries" => [
+                0 => [
+                    "name",
+                    "address",
+                ]
+            ]
+         ]);
+     }
+
+    public function testCreateOneBookWithMultipleLibrariesSuccesfully()
+    {
+         $payload = [
+             'name' => $this->faker->name,
+             'year' => $this->faker->year,
+             "libraries" => [
+                 0 => [
+                    "name" => $this->faker->name,
+                    "address" => $this->faker->date,
+                 ],
+                 1 => [
+                    "name" => $this->faker->name,
+                    "address" => $this->faker->date,
+                 ],
+                 2 => [
+                    "name" => $this->faker->name,
+                    "address" => $this->faker->date,
+                 ]
+             ],
+         ];
  
          $response = $this->json('POST', 'api/books', $payload)
              ->assertStatus(Response::HTTP_CREATED);
@@ -81,6 +120,14 @@ class BookTest extends TestCase
              "year",
              "libraries" => [
                 0 => [
+                    "name",
+                    "address",
+                ],
+                1 => [
+                    "name",
+                    "address",
+                ],
+                2 => [
                     "name",
                     "address",
                 ]
