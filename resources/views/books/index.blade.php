@@ -23,58 +23,66 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
+                <form class="image-upload" method="post" action="{{ route('books.store') }}" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <div class="alert alert-danger">
-                        <div class="alert-danger-box-text"></div>
-                    </div>
-                    <form class="image-upload" method="post" action="{{ route('books.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
-                            <label>Book Id</label>
-                            <input readonly type="text" name="book_id" id="book_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Book Name</label>
-                            <input type="text" name="book_name" id="book_name" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Book Year</label>
-                            <input type="text" name="book_year" id="book_year" class="form-control"/>
+                        <div class="border p-3 m-2">
+                            <div class="form-group">
+                                <label>Book Id</label>
+                                <input readonly type="text" name="book_id" id="book_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Book Name</label>
+                                <input type="text" name="book_name" id="book_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Book Year</label>
+                                <input type="number" name="book_year" id="book_year" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Author Id</label>
-                            <input readonly type="text" name="author_id" id="author_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Author Name</label>
-                            <input type="text" name="author_name" id="author_name" class="form-control"/>
+                        <div class="border p-3 m-2">
+                            <div class="form-group">
+                                <label>Author Id</label>
+                                <input readonly type="text" name="author_id" id="author_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Name</label>
+                                <input type="text" name="author_name" id="author_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Genre</label>
+                                <input type="text" name="author_genre" id="author_genre" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Birth Date</label>
+                                <input type="text" name="author_birth_date" id="author_birth_date" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Author Genre</label>
-                            <input type="text" name="author_genre" id="author_genre" class="form-control"/>
+                        <div class="border p-3 m-2">
+                            <div class="border p-3 m-2">
+                                <div class="form-group">
+                                    <label>Library Id</label>
+                                    <input readonly type="text" name="library_id" id="library_id" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Library Name</label>
+                                    <input type="text" name="library_name" id="library_name" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Library Address</label>
+                                    <input type="text" name="library_address" id="library_address" class="form-control"/>
+                                </div>
+                                <div class="alert alert-danger">
+                                    <div class="alert-danger-box-text"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Author Birth Date</label>
-                            <input type="text" name="author_birth_date" id="author_birth_date" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label>Library Id</label>
-                            <input readonly type="text" name="library_id" id="library_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Library Name</label>
-                            <input type="text" name="library_name" id="library_name" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label>Library Address</label>
-                            <input type="text" name="library_address" id="library_address" class="form-control"/>
-                        </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" class="saveEdit btn btn-success" id="formSubmit">Save</button>
+                    <button type="submit" class="saveEdit btn btn-success" id="formSubmit">Save</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
