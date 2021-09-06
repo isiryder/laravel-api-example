@@ -398,6 +398,49 @@ class BookTest extends TestCase
             ]
         ]);
     }
+
+   public function testFindOneBookWithMultipleLibrariesSuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        for($i=0;$i<3;$i++){
+            $library = Library::create([
+                'name' => $this->faker->name,
+                'address' => $this->faker->address
+            ]);
+
+            $book->libraries()->save($library);
+        }
+
+        $book->save();
+
+        $this->assertDatabaseHas('books', $book->toArray());
+
+        $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "libraries" => [
+                0 => [
+                    "name",
+                    "address",
+                ],
+                1 => [
+                    "name",
+                    "address",
+                ],
+                2 => [
+                    "name",
+                    "address",
+                ]
+            ]
+        ]);
+    }
  
     public function testFindOneBookWithAuthorAndLibrarySuccesfully()
     {
