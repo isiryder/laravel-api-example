@@ -306,7 +306,7 @@
                                                     message = "<strong>Success!</strong> " + response.message;
                                                     $('.alert-box-text').html(message);
                                                     $('.alert-success').show();
-                                                    $('#row-{{$loop->iteration}}').hide();
+                                                    $('#row-{{$loop->iteration}}').remove();
                                                     setInterval('$(".alert-success").hide()', 3000);
                                                 }
                                             },
