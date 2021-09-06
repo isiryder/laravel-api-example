@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Author Genre</label>
-                                <input type="text" name="author_genre" id="author_genre" class="form-control">
+                                <input type="text" name="author_genre" id="author_genre" class="form-control" pattern="^[a-zA-Z]+$">
                             </div>
                             <div class="form-group">
                                 <label>Author Birth Date</label>
@@ -102,6 +102,8 @@
                 let library_address = ''
 
                 $(".alert-danger").hide();
+                $('.alert-danger-box-text').html('');
+
                 if (btn[0].id == "edit_book") {
                     $('#formSubmit').html('Update');
                     $('#book_id').parent().show()
@@ -138,11 +140,28 @@
             })
         })
         $(document).ready(function(){
+            $('#author_genre').on('input', () => {
+                $('#author_genre')[0].setCustomValidity('');
+                $('#author_genre')[0].checkValidity();
+                console.log($('#author_genre')[0].checkValidity());
+            });
+            $('#author_genre').on('invalid', () => {
+                $('#author_genre')[0].setCustomValidity('Please, use only alphabetic characters.');
+            });
             $( "#author_birth_date" ).datepicker({dateFormat: 'yy-mm-dd', maxDate: '0'});
             $(".alert-danger").hide();
             $(".alert-success").hide();
             $('#formSubmit').click(function(e){
                 e.preventDefault();
+                errors = false;
+                if (!$('#author_genre')[0].checkValidity()) {
+                    errors = true;
+                    message = 'Author genre should only contain alphabetic characters.';
+                    $('.alert-danger-box-text').html('<li>'+message+'</li>');
+                    $('.alert-danger').show();
+                }
+                if (errors) return;
+                $('.alert-danger-box-text').html('');
                 $(".alert-danger").hide();
                 $.ajaxSetup({
                     headers: {
