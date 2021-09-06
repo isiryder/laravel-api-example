@@ -105,6 +105,8 @@
                 if (btn[0].id == "edit_book") {
                     $('#formSubmit').html('Update');
                     $('#book_id').parent().show()
+                    $('#author_id').parent().show()
+                    $('#library_id').parent().show()
                     parent_table_row = btn.parent().parent().parent();
                     book_id = btn.data('id');
                     book_name = parent_table_row.find('#book_name_in_row')[0].innerText;
