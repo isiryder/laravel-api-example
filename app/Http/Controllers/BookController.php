@@ -93,21 +93,7 @@ class BookController extends Controller
 
         $book?->update($bookInput);
 
-        if ($request->has('author')) {
-            $author = null;
-            if (isset($request->author['id'])) {
-                $author = Author::find($request->author['id']);
-                $author?->update($request->author);
-                $author?->save();
-            } else {
-                $author = Author::create($request->author);
-            }
-
-            if ($book->author_id != $author?->id) {
-                $book->author_id = $author?->id;
-                $book->save();
-            }
-        }
+        $this->updateAuthorInBook($book, $request->author);
 
         if ($request->has('libraries')) {
             $library = Library::find($request->libraries[0]['id']);
@@ -116,6 +102,25 @@ class BookController extends Controller
         }
 
         return response([], Response::HTTP_NO_CONTENT);
+    }
+
+    private function updateAuthorInBook($book, $authorData) {
+
+        if (isset($authorData)) {
+            $author = null;
+            if (isset($authorData['id'])) {
+                $author = Author::find($authorData['id']);
+                $author?->update($authorData);
+                $author?->save();
+            } else {
+                $author = Author::create($authorData);
+            }
+
+            if ($book->author_id != $author?->id) {
+                $book->author_id = $author?->id;
+                $book->save();
+            }
+        }
     }
 
     /**
