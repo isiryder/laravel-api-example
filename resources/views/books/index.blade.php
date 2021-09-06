@@ -200,7 +200,6 @@
                         message = "<strong>Error!</strong> " + response.statusText + ": " + response.responseJSON.message;
                             $('.alert-danger-box-text').html(message);
                             $('.alert-danger').show();
-                            setInterval('$(".alert-danger").hide()', 5000);
                     }
                 });
             });
