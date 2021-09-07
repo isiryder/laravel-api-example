@@ -3,7 +3,9 @@
     <title>Laravel Example App</title>
     <meta name="_token" content="{{csrf_token()}}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha256-aAr2Zpq8MZ+YA/D6JtRD3xtrwpEz2IqOS+pWD/7XKIw=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -21,64 +23,59 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
+                <form class="image-upload" method="post" action="{{ route('books.store') }}" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <div class="alert alert-danger">
-                        <div class="alert-danger-box-text"></div>
-                    </div>
-                    <form class="image-upload" method="post" action="{{ route('books.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
-                            <label>Book Id</label>
-                            <input readonly type="text" name="book_id" id="book_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Book Name</label>
-                            <input type="text" name="book_name" id="book_name" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Book Year</label>
-                            <input type="text" name="book_year" id="book_year" class="form-control"/>
+                        <div class="border p-3 m-2">
+                            <div class="form-group">
+                                <label>Book Id</label>
+                                <input readonly type="text" name="book_id" id="book_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Book Name</label>
+                                <input required type="text" name="book_name" id="book_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Book Year</label>
+                                <input required type="number" name="book_year" id="book_year" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Author Id</label>
-                            <input readonly type="text" name="author_id" id="author_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Author Name</label>
-                            <input type="text" name="author_name" id="author_name" class="form-control"/>
+                        <div class="border p-3 m-2">
+                            <div class="form-group">
+                                <label>Author Id</label>
+                                <input readonly type="text" name="author_id" id="author_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Name</label>
+                                <input required type="text" name="author_name" id="author_name" class="form-control" pattern="^[a-zA-Z ]+$">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Genre</label>
+                                <input type="text" name="author_genre" id="author_genre" class="form-control" pattern="^[a-zA-Z ]+$">
+                            </div>
+                            <div class="form-group">
+                                <label>Author Birth Date</label>
+                                <input required type="text" name="author_birth_date" id="author_birth_date" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Author Genre</label>
-                            <input type="text" name="author_genre" id="author_genre" class="form-control"/>
+                        <div id="libraries_div" class="border p-3 m-2">
                         </div>
-                        <div class="form-group">
-                            <label>Author Birth Date</label>
-                            <input type="text" name="author_birth_date" id="author_birth_date" class="form-control"/>
+                        <div class="alert alert-danger">
+                            <div class="alert-danger-box-text"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Library Id</label>
-                            <input readonly type="text" name="library_id" id="library_id" class="form-control"/>
-                        </div>  
-                        <div class="form-group">
-                            <label>Library Name</label>
-                            <input type="text" name="library_name" id="library_name" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label>Library Address</label>
-                            <input type="text" name="library_address" id="library_address" class="form-control"/>
-                        </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" class="saveEdit btn btn-success" id="formSubmit">Save</button>
+                    <button type="submit" class="saveEdit btn btn-success" id="formSubmit">Save</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
     <script>
         $(function() {
             $('#exampleModal').on('show.bs.modal', function(e) {
+
                 let btn = $(e.relatedTarget); // element that opened the modal
                 let book_id = '';
                 let book_name = ''
@@ -91,9 +88,17 @@
                 let library_name = ''
                 let library_address = ''
 
+                $(".alert-danger").hide();
+                $('.alert-danger-box-text').html('');
+                $('#libraries_div')[0].innerHTML = '';
+
+                newLibraryFormInModal();
+
                 if (btn[0].id == "edit_book") {
                     $('#formSubmit').html('Update');
-                    $('#book_id').parent().show()
+                    $('#book_id').parent().show();
+                    $('#author_id').parent().show();
+                    $('#library_id').parent().show();
                     parent_table_row = btn.parent().parent().parent();
                     book_id = btn.data('id');
                     book_name = parent_table_row.find('#book_name_in_row')[0].innerText;
@@ -105,13 +110,21 @@
                     library_id = btn.data('library-id');
                     library_name = parent_table_row.find('#library_name_in_row')[0].innerText;
                     library_address = parent_table_row.find('#library_address_in_row')[0].innerText;
+                    $.ajax({
+                        url:  "api/books/" + book_id,
+                        contentType: "application/json",
+                        dataType: 'json',
+                        success: function(result){
+                            updateLibrariesInModal(result);
+                        }
+                    });
                 } else {
                     $('#formSubmit').html('Save');
-                    $('#book_id').parent().hide()
-                    $('#author_id').parent().hide()
-                    $('#library_id').parent().hide()
+                    $('#book_id').parent().hide();
+                    $('#author_id').parent().hide();
+                    $('#library_id').parent().hide();
                 }
-                
+
                 $('#book_id').val(book_id);
                 $('#book_name').val(book_name);
                 $('#book_year').val(book_year);
@@ -124,12 +137,95 @@
                 $('#library_address').val(library_address);
             })
         })
+        function newLibraryFormInModal() {
+            new_library_form =
+`
+            <div class="border p-3 m-2">
+                <div class="form-group">
+                    <label>Library Id</label>
+                    <input readonly type="text" name="library_id" id="library_id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Name</label>
+                    <input type="text" name="library_name" id="library_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Address</label>
+                    <input type="text" name="library_address" id="library_address" class="form-control"/>
+                </div>
+            </div>
+`;
+            $('#libraries_div')[0].innerHTML = new_library_form;
+        }
 
+        function updateLibrariesInModal(book) {
+            console.log(book.libraries);
+            for (library of book.libraries) {
+                libraries_content =
+`
+            <div class="border p-3 m-2">
+                <div class="form-group">
+                    <label>Library Id</label>
+                    <input readonly type="text" value= "${library.id}" name="library_id_${library.id}" id="library_id_${library.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Name</label>
+                    <input readonly type="text" value= "${library.name}" name="library_name_${library.id}" id="library_name_${library.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Address</label>
+                    <input readonly type="text" value= "${library.address}" name="library_address_${library.id}" id="library_address_${library.id}" class="form-control"/>
+                </div>
+            </div>
+`;
+                $('#libraries_div')[0].innerHTML += libraries_content;
+            }
+        }
+        // ${book.libraries}
         $(document).ready(function(){
+            $('#author_name').on('input', () => {
+                $('#author_name')[0].checkValidity();
+            });
+            $('#author_genre').on('input', () => {
+                $('#author_genre')[0].checkValidity();
+            });
+            $( "#author_birth_date" ).datepicker({dateFormat: 'yy-mm-dd', maxDate: '0'});
             $(".alert-danger").hide();
             $(".alert-success").hide();
             $('#formSubmit').click(function(e){
                 e.preventDefault();
+                errors = false;
+                message = '';
+                if (!$('#book_name')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Book name is required.</li>';
+
+                }
+                if (!$('#book_year')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Book year is required.</li>';
+
+                }
+                if (!$('#author_name')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Author name is required and should only contain alphabetic characters.</li>';
+
+                }
+                if (!$('#author_genre')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Author genre should only contain alphabetic characters.</li>';
+                }
+                if (!$('#author_birth_date')[0].checkValidity()) {
+                    errors = true;
+                    message += '<li>Author birth date is required.</li>';
+                }
+                if (errors) {
+                    $('.alert-danger-box-text').html(message);
+                    $('.alert-danger').show();
+                    return;
+                }
+                $('.alert-danger-box-text').html('');
+                $(".alert-danger").hide();
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -175,12 +271,7 @@
                         }
                         else
                         {
-                            var responseMessage = (response === undefined) ? "Book saved" : response.message;
-                            message = "<strong>Success!</strong> " + responseMessage;
-                            $('.alert-box-text').html(message);
-                            $('.alert-success').show();
-                            setInterval('$(".alert-success").hide()', 3000);
-                            $('#exampleModal').modal('hide');
+                            location.reload();
                         }
                     },
                     error: function(response){
@@ -188,10 +279,10 @@
                         message = "<strong>Error!</strong> " + response.statusText + ": " + response.responseJSON.message;
                             $('.alert-danger-box-text').html(message);
                             $('.alert-danger').show();
-                            setInterval('$(".alert-danger").hide()', 5000);
                     }
                 });
             });
+            $('button:disabled').removeAttr('disabled');
         });
     </script>
 
@@ -238,6 +329,7 @@
                                         $libraryName = $library->name;
                                         $libraryAddress = $library->address;
                                     @endphp
+                                    @break;
                                 @endif
                                 @endforeach
                             @endif
@@ -267,10 +359,10 @@
                                 </td>
                                 <td>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id ?? '' }}" data-library-id="{{ $libraryId ?? '' }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
+                                    <button disabled type="button" class="btn btn-outline-success" data-id="{{ $book->id }}" data-author-id="{{ $book->author?->id ?? '' }}" data-library-id="{{ $libraryId ?? '' }}" data-toggle="modal" data-target="#exampleModal" id="edit_book">Edit</button>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
+                                    <button disabled class="btn btn-outline-danger delete-data-{{$loop->iteration}}">Delete</button>
                                 </div>
                                 <script>
                                     $(".delete-data-{{$loop->iteration}}").click(function(event){
@@ -294,7 +386,7 @@
                                                     message = "<strong>Success!</strong> " + response.message;
                                                     $('.alert-box-text').html(message);
                                                     $('.alert-success').show();
-                                                    $('#row-{{$loop->iteration}}').hide();
+                                                    $('#row-{{$loop->iteration}}').remove();
                                                     setInterval('$(".alert-success").hide()', 3000);
                                                 }
                                             },

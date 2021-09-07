@@ -15,7 +15,7 @@ use App\Models\Book;
 */
 
 Route::get('/', function () {
-    $books = Book::with('author', 'libraries')->get();
+    $books = Book::with('author', 'libraries')->orderBy('id', 'DESC')->get();
 
     return view('books.index', [
         'books' => $books

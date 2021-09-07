@@ -24,6 +24,6 @@ class Book extends Model
 
     public function libraries()
     {
-        return $this->belongsToMany(Library::class);
+        return $this->belongsToMany(Library::class)->orderBy('id', 'DESC');
     }
 }
