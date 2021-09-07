@@ -58,24 +58,10 @@
                                 <input required type="text" name="author_birth_date" id="author_birth_date" class="form-control">
                             </div>
                         </div>
-                        <div class="border p-3 m-2">
-                            <div class="border p-3 m-2">
-                                <div class="form-group">
-                                    <label>Library Id</label>
-                                    <input readonly type="text" name="library_id" id="library_id" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Library Name</label>
-                                    <input type="text" name="library_name" id="library_name" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Library Address</label>
-                                    <input type="text" name="library_address" id="library_address" class="form-control"/>
-                                </div>
-                                <div class="alert alert-danger">
-                                    <div class="alert-danger-box-text"></div>
-                                </div>
-                            </div>
+                        <div id="libraries_div" class="border p-3 m-2">
+                        </div>
+                        <div class="alert alert-danger">
+                            <div class="alert-danger-box-text"></div>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -89,6 +75,7 @@
     <script>
         $(function() {
             $('#exampleModal').on('show.bs.modal', function(e) {
+
                 let btn = $(e.relatedTarget); // element that opened the modal
                 let book_id = '';
                 let book_name = ''
@@ -103,12 +90,15 @@
 
                 $(".alert-danger").hide();
                 $('.alert-danger-box-text').html('');
+                $('#libraries_div')[0].innerHTML = '';
+
+                newLibraryFormInModal();
 
                 if (btn[0].id == "edit_book") {
                     $('#formSubmit').html('Update');
-                    $('#book_id').parent().show()
-                    $('#author_id').parent().show()
-                    $('#library_id').parent().show()
+                    $('#book_id').parent().show();
+                    $('#author_id').parent().show();
+                    $('#library_id').parent().show();
                     parent_table_row = btn.parent().parent().parent();
                     book_id = btn.data('id');
                     book_name = parent_table_row.find('#book_name_in_row')[0].innerText;
@@ -120,11 +110,19 @@
                     library_id = btn.data('library-id');
                     library_name = parent_table_row.find('#library_name_in_row')[0].innerText;
                     library_address = parent_table_row.find('#library_address_in_row')[0].innerText;
+                    $.ajax({
+                        url:  "api/books/" + book_id,
+                        contentType: "application/json",
+                        dataType: 'json',
+                        success: function(result){
+                            updateLibrariesInModal(result);
+                        }
+                    });
                 } else {
                     $('#formSubmit').html('Save');
-                    $('#book_id').parent().hide()
-                    $('#author_id').parent().hide()
-                    $('#library_id').parent().hide()
+                    $('#book_id').parent().hide();
+                    $('#author_id').parent().hide();
+                    $('#library_id').parent().hide();
                 }
 
                 $('#book_id').val(book_id);
@@ -139,6 +137,51 @@
                 $('#library_address').val(library_address);
             })
         })
+        function newLibraryFormInModal() {
+            new_library_form =
+`
+            <div class="border p-3 m-2">
+                <div class="form-group">
+                    <label>Library Id</label>
+                    <input readonly type="text" name="library_id" id="library_id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Name</label>
+                    <input type="text" name="library_name" id="library_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Address</label>
+                    <input type="text" name="library_address" id="library_address" class="form-control"/>
+                </div>
+            </div>
+`;
+            $('#libraries_div')[0].innerHTML = new_library_form;
+        }
+
+        function updateLibrariesInModal(book) {
+            console.log(book.libraries);
+            for (library of book.libraries) {
+                libraries_content =
+`
+            <div class="border p-3 m-2">
+                <div class="form-group">
+                    <label>Library Id</label>
+                    <input readonly type="text" value= "${library.id}" name="library_id_${library.id}" id="library_id_${library.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Name</label>
+                    <input readonly type="text" value= "${library.name}" name="library_name_${library.id}" id="library_name_${library.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Library Address</label>
+                    <input readonly type="text" value= "${library.address}" name="library_address_${library.id}" id="library_address_${library.id}" class="form-control"/>
+                </div>
+            </div>
+`;
+                $('#libraries_div')[0].innerHTML += libraries_content;
+            }
+        }
+        // ${book.libraries}
         $(document).ready(function(){
             $('#author_name').on('input', () => {
                 $('#author_name')[0].checkValidity();
@@ -286,6 +329,7 @@
                                         $libraryName = $library->name;
                                         $libraryAddress = $library->address;
                                     @endphp
+                                    @break;
                                 @endif
                                 @endforeach
                             @endif
