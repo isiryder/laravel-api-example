@@ -57,7 +57,7 @@ class BookTest extends TestCase
         ]);
     }
 
-    public function testCreateOneBookWithLibrarySuccesfully()
+    public function testCreateOneBookWithNonExistingLibrarySuccesfully()
     {
          $payload = [
              'name' => $this->faker->name,
@@ -86,6 +86,44 @@ class BookTest extends TestCase
                 ]
             ]
          ]);
+    }
+
+    public function testCreateOneBookWithExistingLibrarySuccesfully()
+    {
+        $library = Library::create([
+            'name' => $this->faker->name,
+            'address' => $this->faker->address
+        ]);
+
+        $library->save();
+
+        $payload = [
+             'name' => $this->faker->name,
+             'year' => $this->faker->year,
+             "libraries" => [
+                 0 => $library->toArray()
+             ],
+         ];
+
+         $responseCreate = $this->json('POST', 'api/books', $payload)
+             ->assertStatus(Response::HTTP_CREATED);
+
+         $responseGet = $this->json('GET', 'api/books/' . $responseCreate->json()['book']['id'])
+         ->assertStatus(Response::HTTP_OK)
+         ->assertJsonStructure([
+             "id",
+             "name",
+             "year",
+             "libraries" => [
+                0 => [
+                    "name",
+                    "address",
+                ]
+            ]
+         ]);
+
+         $this->assertEquals($responseGet->json()['libraries'][0]['id'], $payload['libraries'][0]['id']);
+         $this->assertEquals($responseGet->json()['libraries'][0]['name'], $payload['libraries'][0]['name']);
      }
 
     public function testCreateOneBookWithMultipleLibrariesSuccesfully()
@@ -273,7 +311,6 @@ class BookTest extends TestCase
         $this->assertEquals($response->json()['author']['name'], $payload['author']['name']);
     }
 
-
     public function testUpdateOneBookWithNonExistingAuthorSuccesfully()
     {
         $book = Book::create([
@@ -308,6 +345,44 @@ class BookTest extends TestCase
             ]
         ]);
         $this->assertEquals($response->json()['author']['name'], $payload['author']['name']);
+    }
+
+    public function testUpdateOneBookWithNonExistingLibrarySuccesfully()
+    {
+        $book = Book::create([
+            'name' => $this->faker->name,
+            'year' => $this->faker->year
+        ]);
+
+        $book->save();
+
+        $payload = $book->toArray();
+
+        $payload['libraries'] = [
+            0 => [
+                'name' => $this->faker->name,
+                'address' => $this->faker->address
+            ]
+        ];
+
+        $this->json('PUT', 'api/books/' . $book->id, $payload)
+            ->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $response = $this->json('GET', 'api/books/' . $book->id)
+        ->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            "id",
+            "name",
+            "year",
+            "author_id",
+            "libraries" => [
+                0 => [
+                    "name",
+                    "address"
+                ]
+            ]
+        ]);
+        $this->assertEquals($response->json()['libraries'][0]['name'], $payload['libraries'][0]['name']);
     }
 
     public function testUpdateOneBookWithLibrarySuccesfully()
