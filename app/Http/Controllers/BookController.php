@@ -49,9 +49,7 @@ class BookController extends Controller
 
         if ($request->has('libraries')) {
             foreach ($request->libraries as $libraryData) {
-                $library = Library::create($libraryData);
-                $book->libraries()->save($library);
-                $book->save();
+                $this->updateLibraryInBook($book, $libraryData);
             }
         }
 
@@ -98,9 +96,7 @@ class BookController extends Controller
         $this->updateAuthorInBook($book, $request->author);
 
         if ($request->has('libraries')) {
-            $library = Library::find($request->libraries[0]['id']);
-            $library?->update($request->libraries[0]);
-            $library?->save();
+            $this->updateLibraryInBook($book, $request->libraries[0]);
         }
 
         return response([], Response::HTTP_NO_CONTENT);
@@ -122,6 +118,23 @@ class BookController extends Controller
                 $book->author_id = $author?->id;
                 $book->save();
             }
+        }
+    }
+
+    private function updateLibraryInBook($book, $libraryData) {
+
+        if (isset($libraryData)) {
+            $library = null;
+            if (isset($libraryData['id'])) {
+                $library = Library::find($libraryData['id']);
+                $library?->update($libraryData);
+                $library?->save();
+            } else {
+                $library = Library::create($libraryData);
+                $library->save();
+            }
+            $book->libraries()->save($library);
+            $book->save();
         }
     }
 
