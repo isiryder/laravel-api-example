@@ -7,9 +7,9 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Library;
-use App\Repositories\AuthorRepository;
-use App\Repositories\BookRepository;
-use App\Repositories\LibraryRepository;
+use App\Repositories\Eloquent\AuthorRepository;
+use App\Repositories\Eloquent\BookRepository;
+use App\Repositories\Eloquent\LibraryRepository;
 
 
 class BookController extends Controller
