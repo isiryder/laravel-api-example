@@ -7,16 +7,22 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Library;
+use App\Repositories\AuthorRepository;
 use App\Repositories\BookRepository;
+use App\Repositories\LibraryRepository;
 
 
 class BookController extends Controller
 {
+    private $authorRepository;
     private $bookRepository;
+    private $libraryRepository;
 
-    public function __construct(BookRepository $bookRepository)
+    public function __construct(BookRepository $bookRepository, AuthorRepository $authorRepository, LibraryRepository $libraryRepository)
     {
         $this->bookRepository = $bookRepository;
+        $this->authorRepository = $authorRepository;
+        $this->libraryRepository = $libraryRepository;
     }
 
     /**
