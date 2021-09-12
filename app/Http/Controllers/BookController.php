@@ -7,9 +7,18 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Library;
+use App\Repositories\BookRepository;
+
 
 class BookController extends Controller
 {
+    private $bookRepository;
+
+    public function __construct(BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +26,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Book::with('author', 'libraries')->get();
+        return $this->bookRepository->all();
     }
 
     /**
