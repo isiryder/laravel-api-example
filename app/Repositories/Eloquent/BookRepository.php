@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Book;

@@ -7,9 +7,9 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Library;
-use App\Repositories\AuthorRepository;
-use App\Repositories\BookRepository;
-use App\Repositories\LibraryRepository;
+use App\Repositories\Eloquent\AuthorRepository;
+use App\Repositories\Eloquent\BookRepository;
+use App\Repositories\Eloquent\LibraryRepository;
 
 
 class BookController extends Controller
@@ -42,6 +42,12 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+        $book = $this->storeBookWithRelations($request);
+
+        return response(['book' => $book, 'message' => 'Created Successfully'], Response::HTTP_CREATED);
+    }
+
+    private function storeBookWithRelations($request) {
         $book = $this->bookRepository->create($request->all());
 
         if ($request->has('author')) {
@@ -56,7 +62,7 @@ class BookController extends Controller
             }
         }
 
-        return response(['book' => $book, 'message' => 'Created Successfully'], Response::HTTP_CREATED);
+        return $book;
     }
 
     /**
@@ -94,9 +100,15 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->updateBookWithRelations($request, $id);
+
+        return response([], Response::HTTP_NO_CONTENT);
+    }
+
+    private function updateBookWithRelations($request, $id) {
         $book = $this->bookRepository->get($id);
 
-        if (!$book) return response([], Response::HTTP_NO_CONTENT);
+        if (!$book) return;
 
         $book->fill($request->all());
 
@@ -107,8 +119,6 @@ class BookController extends Controller
         if ($request->has('libraries')) {
             $this->updateLibraryInBook($book, $request->libraries[0]);
         }
-
-        return response([], Response::HTTP_NO_CONTENT);
     }
 
     private function updateAuthorInBook($book, $authorData) {
