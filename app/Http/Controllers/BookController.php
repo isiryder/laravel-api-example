@@ -7,9 +7,24 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Library;
+use App\Repositories\AuthorRepository;
+use App\Repositories\BookRepository;
+use App\Repositories\LibraryRepository;
+
 
 class BookController extends Controller
 {
+    private $authorRepository;
+    private $bookRepository;
+    private $libraryRepository;
+
+    public function __construct(BookRepository $bookRepository, AuthorRepository $authorRepository, LibraryRepository $libraryRepository)
+    {
+        $this->bookRepository = $bookRepository;
+        $this->authorRepository = $authorRepository;
+        $this->libraryRepository = $libraryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,17 +32,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Book::with('author', 'libraries')->get();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        echo Form::open(array('url' => 'foo/bar', 'method' => 'put'));
+        return $this->bookRepository->all();
     }
 
     /**
@@ -36,15 +41,13 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $bookInput = $request->only((new Book)->getFillable());
-        $book = Book::create($bookInput);
+    public function store(Request $request) {
+        $book = $this->bookRepository->create($request->all());
 
         if ($request->has('author')) {
-            $author = Author::create($request->author);
+            $author = $this->authorRepository->create($request->author);
             $book->author_id = $author->id;
-            $book->save();
+            $this->bookRepository->save($book);
         }
 
         if ($request->has('libraries')) {
@@ -64,7 +67,11 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        return Book::with('author', 'libraries')->findOrFail($id);
+        $book = $this->bookRepository->get($id);
+
+        if (!$book) return response(['message' => 'Not found'], Response::HTTP_NOT_FOUND);
+
+        return $book;
     }
 
     /**
@@ -87,11 +94,13 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $book = Book::find($id);
+        $book = $this->bookRepository->get($id);
 
-        $bookInput = $request->only((new Book)->getFillable());
+        if (!$book) return response([], Response::HTTP_NO_CONTENT);
 
-        $book?->update($bookInput);
+        $book->fill($request->all());
+
+        $this->bookRepository->update($book);
 
         $this->updateAuthorInBook($book, $request->author);
 
@@ -107,16 +116,16 @@ class BookController extends Controller
         if (isset($authorData)) {
             $author = null;
             if (isset($authorData['id'])) {
-                $author = Author::find($authorData['id']);
-                $author?->update($authorData);
-                $author?->save();
+                $author = $this->authorRepository->get($authorData['id']);
+                $author->fill($authorData);
+                $this->authorRepository->update($author);
             } else {
-                $author = Author::create($authorData);
+                $author = $this->authorRepository->create($authorData);
             }
 
             if ($book->author_id != $author?->id) {
                 $book->author_id = $author?->id;
-                $book->save();
+                $this->bookRepository->save($book);
             }
         }
     }
@@ -126,15 +135,15 @@ class BookController extends Controller
         if (isset($libraryData)) {
             $library = null;
             if (isset($libraryData['id'])) {
-                $library = Library::find($libraryData['id']);
+                $library = $this->libraryRepository->get($libraryData['id']);
                 $library?->update($libraryData);
                 $library?->save();
             } else {
-                $library = Library::create($libraryData);
+                $library = $this->libraryRepository->create($libraryData);
                 $library->save();
             }
             $book->libraries()->save($library);
-            $book->save();
+            $this->bookRepository->save($book);
         }
     }
 
@@ -146,8 +155,10 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        $book = Book::findOrFail($id);
-        $book->delete();
+        $book = $this->bookRepository->get($id);
+        if (!$book) return response(['message' => 'Not found'], Response::HTTP_NOT_FOUND);
+
+        $this->bookRepository->delete($book);
 
         return response(['message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
