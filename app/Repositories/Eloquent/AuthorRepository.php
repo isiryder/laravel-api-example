@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Repositories\AuthorRepositoryInterface;
 use App\Models\Author;
 
