@@ -3,9 +3,10 @@
 namespace App\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Repositories\AuthorRepositoryInterface;
 use App\Models\Author;
 
-class AuthorRepository extends BaseRepository {
+class AuthorRepository extends BaseRepository implements AuthorRepositoryInterface {
 
     const RELATIONS = [
     ];
