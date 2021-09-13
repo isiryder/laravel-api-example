@@ -3,9 +3,9 @@
 namespace App\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Book;
+use App\Repositories\EloquentRepositoryInterface;
 
-class BaseRepository {
+class BaseRepository implements EloquentRepositoryInterface {
 
     protected $model;
     protected $queryBuilder;

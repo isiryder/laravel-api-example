@@ -2,10 +2,10 @@
 
 namespace App\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\LibraryRepositoryInterface;
 use App\Models\Library;
 
-class LibraryRepository extends BaseRepository {
+class LibraryRepository extends BaseRepository  implements LibraryRepositoryInterface {
 
     const RELATIONS = [
     ];
