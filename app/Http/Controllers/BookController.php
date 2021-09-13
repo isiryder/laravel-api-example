@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Book;
-use App\Models\Author;
-use App\Models\Library;
 use App\Repositories\AuthorRepositoryInterface;
 use App\Repositories\BookRepositoryInterface;
 use App\Repositories\LibraryRepositoryInterface;
