@@ -14,8 +14,6 @@ class AuthorsTableSeeder extends Seeder
      */
     public function run()
     {
-        Author::truncate();
-
         $faker = \Faker\Factory::create();
 
         for ($i=0; $i < 10; $i++){
